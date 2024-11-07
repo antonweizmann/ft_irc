@@ -4,6 +4,7 @@ ircserv
 vgcore.*
 *tmp*
 
+sub 
 # Prerequisites
 *.d
 

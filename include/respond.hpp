@@ -21,6 +21,7 @@
 # define ERR_NOSUCHCHANNEL(nick, channel) (":irc.andiarbeit.com 403 " + nick + " " + (channel[0] == '#' ? "" : "#") + channel + " :No such channel")
 # define ERR_NORECIPIENT(nick) (":irc.andiarbeit.com 411 " + nick + " :No recipient given")
 # define ERR_NOTEXTTOSEND(nick) (":irc.andiarbeit.com 412 " + nick + " :No text to send")
+# define ERR_NOMOTD(nick) (":irc.andiarbeit.com 422 " + nick + " :MOTD File is missing")
 # define ERR_NONICKNAMEGIVEN(nick) (":irc.andiarbeit.com 431 " + nick + " :No nickname given")
 # define ERR_ERRONEUSNICKNAME(nick, falseNick) (":irc.andiarbeit.com 432 " + nick + " " + falseNick + " :Erroneus nickname")
 # define ERR_NICKNAMEINUSE(nick, falseNick) (":irc.andiarbeit.com 433 " + nick + " " + falseNick + " :Nickname already in use")
