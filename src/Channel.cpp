@@ -24,7 +24,7 @@ Channel::~Channel()
 void Channel::addUser(Client &client)
 {
 	if (_users.find(client.getNickname()) != _users.end())
-		std::cerr << "User is already in channel";
+		{std::cerr << "User is already in channel" << std::endl; return ;}
 	_users[client.getNickname()] = &client;
 	systemMessage(client.getNickname() + " has joined the channel");
 }
@@ -32,7 +32,7 @@ void Channel::addUser(Client &client)
 void Channel::removeUser(Client &client)
 {
 	if (_users.find(client.getNickname()) == _users.end())
-		throw std::runtime_error("User is not in channel");
+		{std::cerr << "User is not in channel" << std::endl; return ;}
 	_users.erase(client.getNickname());
 	systemMessage(client.getNickname() + " has left the channel");
 	if (_operators.find(client.getNickname()) != _operators.end())

@@ -45,12 +45,12 @@ int	main(int argc, char **argv)
 	{
 		return 1;
 	}
-	// try
-	// {
+	try
+	{
 		server.poll();
-	// }
-	// catch (const std::exception &e)
-	// {
-	// 	return 1;
-	// }
+	}
+	catch (const std::exception &e)
+	{
+		return 1;
+	}
 }
