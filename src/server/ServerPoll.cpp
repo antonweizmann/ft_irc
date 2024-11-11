@@ -41,6 +41,7 @@ void	Server::sendData(int fd)
 void splitData(std::string data, std::vector<std::string> &cmd, Client &client)
 {
 	std::string& str = client.getInBuff();
+	str.append(data);
 	while (!str.empty())
 	{
 		size_t pos = str.find_first_of("\r\n");
