@@ -41,15 +41,15 @@ void	Server::setupServerSocket()
 
 	sockaddr_in addr;
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(_port); // convert from host to network byte order
+	addr.sin_port = htons(_port); // convert from .host to network byte order
 	addr.sin_addr.s_addr = INADDR_ANY;
-	if (bind(_server_socket_fd, (struct sockaddr *)&addr, sizeof(sockaddr_in)) == -1)
-		throw(std::runtime_error("server socket binding failed"));
 	int value = 1;
 	if (setsockopt(_server_socket_fd, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(value)) == -1)
 		throw(std::runtime_error("setting server socket option `REUSEADDR` failed"));
 	if (fcntl(_server_socket_fd, F_SETFL, O_NONBLOCK) == -1) // make fd nonblocking for MacOS
 		throw(std::runtime_error("setting server socket to `NONBLOCK` failed"));
+	if (bind(_server_socket_fd, (struct sockaddr *)&addr, sizeof(sockaddr_in)) == -1)
+		throw(std::runtime_error("server socket binding failed"));
 	if (listen(_server_socket_fd, SOMAXCONN) == -1) // wait for connections
 		throw(std::runtime_error("server socket listening failed"));
 
@@ -97,7 +97,7 @@ void	Server::finishRegistration(int fd)
 	sendResponse(RPL_CREATED(client.getNickname(), "today"), fd);
 	sendResponse(RPL_MYINFO(client.getNickname(), _name, version, "-", "itkol", "kl"), fd);
 	sendResponse(RPL_ISUPPORT(), fd);
-	sendResponse(ERR_NOMOTD(client.getNickname()), fd);
+	// sendResponse(ERR_NOMOTD(client.getNickname()), fd);
 }
 
 void	Server::shutdown()

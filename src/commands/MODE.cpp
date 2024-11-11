@@ -57,7 +57,7 @@ bool Server::channelKey(bool sign, Channel &channel, std::string &modeReport, st
 		if (!argsReport.empty())
 			argsReport += " ";
 		argsReport += *argsIt;
-		argsIt++;	
+		argsIt++;
 		addMode(modeReport, 'k', sign);
 	}
 	else
@@ -76,7 +76,7 @@ bool Server::operatorPriv(bool sign, Channel &channel, std::string &modeReport, 
 		{sendResponse(ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "(o)"), fd); return false;}
 	if (!getClient(test))
 		{sendResponse(ERR_NOSUCHNICK(getClient(fd)->getNickname() ,*argsIt), fd); return false;}
-	Client &user = *(getClient(test));
+	Client &user = *getClient(test);
 	if (!channel.getUser(*argsIt))
 		{sendResponse(ERR_USERNOTINCHANNEL(getClient(fd)->getNickname(), *argsIt, channel.getName()), fd); return false;}
 	if (sign)

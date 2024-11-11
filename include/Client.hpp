@@ -15,7 +15,8 @@ class Client
 		std::string _nick;
 		std::string _username;
 		std::string _realname;
-		std::string _signalBuffer;
+		std::string _inBuffer;
+		std::string _outBuffer;
 		int			_auth_stage{2}; // 2 no pass; 1 no nick; 0 authenticated
 	public:
 		Client();
@@ -24,7 +25,7 @@ class Client
 		// getter and setter
 		int		getFd() const;
 		void	setFd(int fd);
-		std::string	getBuffer() const;
+		std::string&	getBuffer();
 		void	setBuffer(std::string msg);
 		void	setIpAddr(const std::string ip_addr);
 		const	std::string& getNickname(void) const;
@@ -35,7 +36,9 @@ class Client
 		void	setRealname(const std::string &new_realname);
 		int		getAuth() const;
 		void	setAuth(int auth_stage);
-
+		void	setInBuff(std::string msg);
+		std::string&	getInBuff();
+		void			addInBuff(std::string msg);
 		//actual functions
 		void	joinChannel(Channel *channel);
 		void	leaveChannel(Channel *channel);

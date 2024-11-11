@@ -11,7 +11,7 @@ Server::~Server() {}
 
 void Server::sendResponse(std::string message, int fd)
 {
-	Client &reciever = *(getClient(fd));
+	Client &reciever = *getClient(fd);
 	reciever.receiveMsg(message);
 }
 
