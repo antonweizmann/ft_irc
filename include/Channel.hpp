@@ -52,7 +52,7 @@ class Channel
 		bool isChannelfull() const;
 		void	clearModes();
 		//Invite Handling
-		void inviteUser(Client &invitedClient, Client &inviter);
+		void inviteUser(Client &invitedClient);
 		bool isUserInvited(Client &client) const;
 
 		//Getters

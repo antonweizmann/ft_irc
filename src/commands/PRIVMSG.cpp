@@ -16,6 +16,6 @@ void	Server::PRIVMSG(std::vector<std::string> cmd, int fd)
 		if (getClient(target))
 			getClient(target)->receiveMsg(":" + sender.getNickname() + " PRIVMSG " + target + " :" + cmd[1]);
 		else
-			_channels[target.substr(1)].systemMessage( ":" + sender.getNickname() + "!" + sender.getUsername() + "@" + "localhost" + " PRIVMSG #" + target.substr(1) + " :" + cmd[1]);
+			_channels[target.substr(1)].broadcastMessage( ":" + sender.getNickname() + "!" + sender.getUsername() + "@" + "localhost" + " PRIVMSG #" + target.substr(1) + " :" + cmd[1], sender);
 	}
 }

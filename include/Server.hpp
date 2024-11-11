@@ -55,7 +55,7 @@ class Server
 		void						poll();
 		void						receiveData(int fd);
 		void						parseCommand(const std::string command, int fd);
-		std::vector<std::string>	parseArgs(const std::string command_args, int fd);
+		std::vector<std::string>	parseArgs(const std::string command_args);
 		void						cmdDecide(const std::string cmd, const std::vector<std::string> args, int fd);
 		void						sendData(int fd);
 

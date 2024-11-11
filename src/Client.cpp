@@ -1,7 +1,7 @@
 
 #include "Client.hpp"
 
-Client::Client() : _signalBuffer("")
+Client::Client() : _inBuffer(""), _outBuffer("")
 {
 }
 
@@ -76,15 +76,29 @@ void	Client::leaveChannel(Channel *channel)
 
 void	Client::receiveMsg(const std::string &msg)
 {
-	_signalBuffer += msg + "\r\n";
+	_outBuffer += msg + "\r\n";
 }
 
-std::string	Client::getBuffer() const
+std::string&	Client::getBuffer()
 {
-	return _signalBuffer;
+	return _outBuffer;
 }
 
 void	Client::setBuffer(std::string msg)
 {
-	_signalBuffer = msg;
+	_outBuffer = msg;
+}
+
+std::string&	Client::getInBuff()
+{
+	return _inBuffer;
+}
+
+void	Client::setInBuff(std::string msg)
+{
+	_inBuffer = msg;
+}
+void	Client::addInBuff(std::string msg)
+{
+	_inBuffer += msg;
 }

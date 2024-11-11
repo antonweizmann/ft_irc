@@ -24,7 +24,7 @@ Channel::~Channel()
 void Channel::addUser(Client &client)
 {
 	if (_users.find(client.getNickname()) != _users.end())
-		std::cerr << "User is already in channel";
+		{std::cerr << "User is already in channel" << std::endl; return ;}
 	_users[client.getNickname()] = &client;
 	systemMessage(client.getNickname() + " has joined the channel");
 }
@@ -32,7 +32,7 @@ void Channel::addUser(Client &client)
 void Channel::removeUser(Client &client)
 {
 	if (_users.find(client.getNickname()) == _users.end())
-		throw std::runtime_error("User is not in channel");
+		{std::cerr << "User is not in channel" << std::endl; return ;}
 	_users.erase(client.getNickname());
 	systemMessage(client.getNickname() + " has left the channel");
 	if (_operators.find(client.getNickname()) != _operators.end())
@@ -63,7 +63,7 @@ const std::pair<std::string, std::string> &Channel::getTopic() const
 }
 
 
-void Channel::inviteUser(Client &invitedClient, Client &inviter)
+void Channel::inviteUser(Client &invitedClient)
 {
 	_invitedUsers.emplace(invitedClient.getNickname(), invitedClient);
 }
@@ -105,18 +105,17 @@ void Channel::broadcastMessage(const std::string &message, Client &sender)
 {
 	if (_users.size() == 1)
 		return ;
-	if (_users.size() == 2)
-	{
-		if (_users.begin()->second->getNickname() != sender.getNickname())
-			_users.begin()->second->receiveMsg(message);
-		else
-			(++_users.begin())->second->receiveMsg(message);
-		return ;
-	}
+	// if (_users.size() == 2)
+	// {
+	// 	if (_users.begin()->second->getNickname() != sender.getNickname())
+	// 		_users.begin()->second->receiveMsg(message);
+	// 	else
+	// 		(++_users.begin())->second->receiveMsg(message);
+	// 	return ;
+	// }
 	for (auto it = _users.begin(); it != _users.end(); it++)
 	{
 		Client *reciever = getUser(it->first);
-		reciever->receiveMsg(message);
 		if (reciever->getNickname() != sender.getNickname())
 			reciever->receiveMsg(message);
 	}
@@ -189,7 +188,7 @@ bool Channel::isChannelfull() const
 {
 	if (!isModeSet(USER_LIMIT))
 		return false;
-	return (_users.size() == std::atoi(getModeValue(USER_LIMIT).c_str()));
+	return (_users.size() == static_cast <unsigned long> (std::atoi(getModeValue(USER_LIMIT).c_str())));
 }
 
 std::string Channel::getAllUsers() const

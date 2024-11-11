@@ -28,7 +28,7 @@ void	Server::sendData(int fd)
 {
 	if (!getClient(fd))
 		return ;
-	Client &reciever = *(getClient(fd));
+	Client &reciever = *getClient(fd);
 	const std::string &out = reciever.getBuffer();
 	if (!out.empty())
 	{
@@ -38,18 +38,17 @@ void	Server::sendData(int fd)
 	}
 }
 
-void splitData(std::string data, std::vector<std::string> &cmd)
+void splitData(std::string data, std::vector<std::string> &cmd, Client &client)
 {
-	static std::string	str("");
-
+	std::string& str = client.getInBuff();
 	str.append(data);
 	while (!str.empty())
 	{
-		size_t pos = str.find_first_of("\n");
+		size_t pos = str.find_first_of("\r\n");
 		if (pos == std::string::npos)
 			return;
 		cmd.push_back(str.substr(0, pos));
-		str.erase(0, pos + 1);
+		str.erase(0, pos + 2);
 	}
 }
 
@@ -68,7 +67,7 @@ void	Server::receiveData(int fd)
 		close(fd);
 	} else {
 		std::cout << MAGENTA << "Client " << fd << " data: " << RESET << buff << std::endl;
-		splitData(buff, cmd);
+		splitData(buff, cmd, *getClient(fd));
 		for (auto it = cmd.begin(); it != cmd.end(); it++)
 			parseCommand(*it, fd);
 	}
@@ -85,7 +84,7 @@ void	Server::parseCommand(const std::string command, int fd)
 		cmd_end = command.size();
 	cmd_end = std::min(colon, cmd_end);
 	cmd = command.substr(0, cmd_end);
-	args = parseArgs(command.substr(cmd_end), fd);
+	args = parseArgs(command.substr(cmd_end));
 
 	std::cout << std::endl << "PARSED COMMAND:" << std::endl;
 	std::cout << '"' << cmd << '"' << std::endl;
@@ -96,7 +95,7 @@ void	Server::parseCommand(const std::string command, int fd)
 	cmdDecide(cmd, args, fd);
 }
 
-std::vector<std::string>	Server::parseArgs(const std::string command_args, int fd)
+std::vector<std::string>	Server::parseArgs(const std::string command_args)
 {
 	std::vector<std::string>	args;
 	size_t	colon;
@@ -127,7 +126,11 @@ void	Server::cmdDecide(const std::string cmd, const std::vector<std::string> arg
 	std::string cmd_upper = cmd;
 
 	transform(cmd.begin(), cmd.end(), cmd_upper.begin(), toupper);
-	// CAP(fd);
+
+	if (cmd_upper == "CAP")
+		return;
+	if (cmd_upper == "PING")
+		sendResponse("PONG", fd);
 	if (client.getAuth() == 2)
 	{
 		if ((cmd_upper != "PASS"))

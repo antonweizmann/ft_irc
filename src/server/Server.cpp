@@ -5,13 +5,13 @@ bool Server::_signal = false;
 
 Server::Server(int port) : _port(port), _name("irc.andiarbeit.com") {}
 
-Server::Server(int port, std::string pass) : _port(port), _pass(pass), _name("irc.andiarbeit.com") {}
+Server::Server(int port, std::string pass) : _port(port), _name("irc.andiarbeit.com"), _pass(pass) {}
 
 Server::~Server() {}
 
 void Server::sendResponse(std::string message, int fd)
 {
-	Client &reciever = *(getClient(fd));
+	Client &reciever = *getClient(fd);
 	reciever.receiveMsg(message);
 }
 

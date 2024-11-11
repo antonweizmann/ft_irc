@@ -3,17 +3,17 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: antonweizmann <antonweizmann@student.42    +#+  +:+       +#+         #
+#    By: aweizman <aweizman@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/09 15:34:56 by padam             #+#    #+#              #
-#    Updated: 2024/10/24 14:30:33 by antonweizma      ###   ########.fr        #
+#    Updated: 2024/11/11 15:11:08 by aweizman         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ircserv
 
 CC = c++
-CFLAGS =  $(INCLUDES) -g3 -std=c++17 #-Wall -Wextra -Werror
+CFLAGS =  $(INCLUDES) -g3 -std=c++17 -Wall -Wextra -Werror
 INCLUDES = -I./include
 LIBS =
 

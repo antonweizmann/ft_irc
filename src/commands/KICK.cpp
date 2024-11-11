@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-std::string splitCmdKick(std::vector<std::string>& cmd, std::string &channel, std::vector<std::string>& usersToKick)
+std::string splitCmdKick(std::vector<std::string>& cmd, std::vector<std::string>& usersToKick)
 {
 	size_t pos;
 	size_t comma_pos;
@@ -23,12 +23,13 @@ void Server::KICK(std::vector<std::string> cmd, int fd)
 {
 	std::vector<std::string> usersToKick;
 	Client &sender = *getClient(fd);
-	if (cmd.size() < 2)
+	if (cmd.size() < 1)
 		{sendResponse(ERR_NEEDMOREPARAMS(sender.getNickname(), (cmd.empty() ? "KICK" : "KICK " + cmd[0])), fd); return ;}
 	std::string channel = cmd[0].substr(1);
-	std::string reason = splitCmdKick(cmd, channel, usersToKick);
+	std::string reason = splitCmdKick(cmd, usersToKick);
 	if (_channels.find(channel) != _channels.end())
 	{
+		std::cout << "here" << std::endl;
 		Channel &curChannel = _channels[channel];
 		if (!curChannel.getUser(sender.getNickname())) // check if sender is in channel
 			{sendResponse(ERR_NOTONCHANNEL(sender.getNickname(), channel), fd); return ;}
@@ -40,7 +41,7 @@ void Server::KICK(std::vector<std::string> cmd, int fd)
 					{sendResponse(ERR_USERNOTINCHANNEL(sender.getNickname(), *it, channel), fd); continue;}
 				std::stringstream ss;
 				ss << ":" << sender.getNickname() << "!" << curChannel.getUser(*it)->getUsername() << "@" << "localhost" << " KICK #" << curChannel.getName() << " " << curChannel.getUser(*it)->getNickname() << " :" << reason;
-				curChannel.broadcastMessage(ss.str(), sender);
+				curChannel.systemMessage(ss.str());
 				curChannel.removeUser(*curChannel.getUser(*it));
 				if (curChannel.getOperator(*it))
 					curChannel.removeOperator(*curChannel.getOperator(*it));
