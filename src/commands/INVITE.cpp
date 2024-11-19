@@ -19,7 +19,7 @@ void Server::INVITE(std::vector<std::string> cmd, int fd)
 	if (channel.getUser(target))
 		{sendResponse(ERR_USERONCHANNEL(sender.getNickname(), target, channelnick), fd); return ;}
 	Client		&toInv = *getClient(target);
-	if (!channel.isUserInvited(toInv))
+	if (!channel.isUserInvited(toInv.getNickname()))
 	{
 		channel.inviteUser(toInv);
 		sendResponse(RPL_INVITING(sender.getNickname(), target, channelnick), fd);

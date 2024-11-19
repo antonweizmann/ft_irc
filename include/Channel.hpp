@@ -53,8 +53,8 @@ class Channel
 		void	clearModes();
 		//Invite Handling
 		void inviteUser(Client &invitedClient);
-		bool isUserInvited(Client &client) const;
-
+		bool isUserInvited(std::string name) const;
+		void removeInvited(Client &client);
 		//Getters
 		const std::string &getName() const;
 		Client *getUser(std::string user);

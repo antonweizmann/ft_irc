@@ -13,6 +13,7 @@ std::string splitCmdKick(std::vector<std::string>& cmd, std::vector<std::string>
 	}
 	pos = args.find(' ');
 	usersToKick.push_back(args.substr(0, pos));
+	if (cmd.size() > 1)
 	reason = cmd[2];
 	if (reason.empty())
 		reason = "Kick because lol";
@@ -23,7 +24,7 @@ void Server::KICK(std::vector<std::string> cmd, int fd)
 {
 	std::vector<std::string> usersToKick;
 	Client &sender = *getClient(fd);
-	if (cmd.size() < 1)
+	if (cmd.size() < 2)
 		{sendResponse(ERR_NEEDMOREPARAMS(sender.getNickname(), (cmd.empty() ? "KICK" : "KICK " + cmd[0])), fd); return ;}
 	std::string channel = cmd[0].substr(1);
 	std::string reason = splitCmdKick(cmd, usersToKick);
@@ -45,6 +46,8 @@ void Server::KICK(std::vector<std::string> cmd, int fd)
 				curChannel.removeUser(*curChannel.getUser(*it));
 				if (curChannel.getOperator(*it))
 					curChannel.removeOperator(*curChannel.getOperator(*it));
+				if (curChannel.isUserInvited(*it))
+					curChannel.removeInvited(*getClient(*it));
 				if (curChannel.getUserCount() == 0)
 					{_channels.erase(curChannel.getName()); return ;}
 		}

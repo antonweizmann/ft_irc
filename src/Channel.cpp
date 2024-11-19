@@ -52,6 +52,11 @@ void Channel::removeOperator(Client &client)
 	_operators.erase(client.getNickname());
 	client.receiveMsg("You are no longer an operator on " + _name);
 }
+void Channel::removeInvited(Client &client)
+{
+	_invitedUsers.erase(client.getNickname());
+	client.receiveMsg("You are no longer an invited on " + _name);
+}
 void Channel::setTopic(const std::pair<std::string, std::string> &topic)
 {
 	_topic = topic;
@@ -82,9 +87,9 @@ bool Channel::isModeSet(int mode) const
 	return (_modes[mode].first);
 }
 
-bool Channel::isUserInvited(Client &client) const
+bool Channel::isUserInvited(std::string name) const
 {
-	if (_invitedUsers.find(client.getNickname()) != _invitedUsers.end())
+	if (_invitedUsers.find(name) != _invitedUsers.end())
 		return true;
 	return false;
 }

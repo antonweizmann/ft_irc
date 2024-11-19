@@ -47,7 +47,7 @@ void Server::JOIN(std::vector<std::string> cmd, int fd)
 		Channel &curChannel = _channels[channelname];
 		if (curChannel.isModeSet(KEY) && (itKeys == keys.end() || curChannel.getModeValue(KEY) != *itKeys))
 			{sendResponse(ERR_BADCHANNELKEY(sender.getNickname(), channelname), fd); continue;}
-		if (curChannel.isModeSet(INVITE_ONLY) && !curChannel.isUserInvited(sender))
+		if (curChannel.isModeSet(INVITE_ONLY) && !curChannel.isUserInvited(sender.getNickname()))
 			{sendResponse(ERR_INVITEONLYCHAN(sender.getNickname(), channelname), fd); continue;}
 		if (curChannel.isModeSet(USER_LIMIT) && curChannel.isChannelfull())
 			{sendResponse(ERR_CHANNELISFULL(sender.getNickname(), channelname), fd); continue;}

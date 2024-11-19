@@ -44,10 +44,10 @@ void	Server::setupServerSocket()
 	addr.sin_port = htons(_port); // convert from .host to network byte order
 	addr.sin_addr.s_addr = INADDR_ANY;
 	int value = 1;
-	if (setsockopt(_server_socket_fd, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(value)) == -1)
-		throw(std::runtime_error("setting server socket option `REUSEADDR` failed"));
 	if (fcntl(_server_socket_fd, F_SETFL, O_NONBLOCK) == -1) // make fd nonblocking for MacOS
 		throw(std::runtime_error("setting server socket to `NONBLOCK` failed"));
+	if (setsockopt(_server_socket_fd, SOL_SOCKET, SO_REUSEADDR, &value, sizeof(value)) == -1)
+		throw(std::runtime_error("setting server socket option `REUSEADDR` failed"));
 	if (bind(_server_socket_fd, (struct sockaddr *)&addr, sizeof(sockaddr_in)) == -1)
 		throw(std::runtime_error("server socket binding failed"));
 	if (listen(_server_socket_fd, SOMAXCONN) == -1) // wait for connections
