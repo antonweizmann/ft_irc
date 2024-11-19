@@ -13,8 +13,8 @@ std::string splitCmdKick(std::vector<std::string>& cmd, std::vector<std::string>
 	}
 	pos = args.find(' ');
 	usersToKick.push_back(args.substr(0, pos));
-	if (cmd.size() > 1)
-	reason = cmd[2];
+	if (cmd.size() > 2)
+		reason = cmd[2];
 	if (reason.empty())
 		reason = "Kick because lol";
 	return reason;
@@ -30,7 +30,6 @@ void Server::KICK(std::vector<std::string> cmd, int fd)
 	std::string reason = splitCmdKick(cmd, usersToKick);
 	if (_channels.find(channel) != _channels.end())
 	{
-		std::cout << "here" << std::endl;
 		Channel &curChannel = _channels[channel];
 		if (!curChannel.getUser(sender.getNickname())) // check if sender is in channel
 			{sendResponse(ERR_NOTONCHANNEL(sender.getNickname(), channel), fd); return ;}

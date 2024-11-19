@@ -26,8 +26,8 @@ void Server::PART(std::vector<std::string> cmd, int fd)
 		curChannel.removeUser(sender);
 		if (curChannel.getOperator(sender.getNickname()))
 			curChannel.removeOperator(sender);
-		if (curChannel.isUserInvited(*it))
-			curChannel.removeInvited(*getClient(*it));
+		if (curChannel.isUserInvited(sender.getNickname()))
+			curChannel.removeInvited(sender);
 		if (curChannel.getUserCount() == 0)
 			_channels.erase(curChannel.getName());
 	}

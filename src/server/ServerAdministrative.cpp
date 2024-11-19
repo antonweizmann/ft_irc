@@ -119,7 +119,7 @@ void	Server::shutdown()
 
 void	Server::clearClient(int fd)
 {
-	std::cout << "Disconnecting client " << fd << std::endl;
+	std::cout << RED << "Disconnecting client " << fd << RESET << std::endl;
 	for (auto it = _sockets.begin(); it != _sockets.end();)
 		if (it->fd == fd)
 			it = _sockets.erase(it);
@@ -128,11 +128,31 @@ void	Server::clearClient(int fd)
 	Client &me = *getClient(fd);
 	for (auto it = _channels.begin(); it != _channels.end(); it++)
 	{
+		std::cout << it->first << std::endl;
 		Channel &curChannel = it->second;
-		std::vector<std::string> partCmd = {"#" + curChannel.getName()};
 		if (curChannel.getUser(me.getNickname()))
-			PART(partCmd, fd);
+			partClient(me, curChannel);
+		if (curChannel.getUserCount() == 0)
+		{
+			it =_channels.erase(it);
+			if (it == _channels.end())
+				break;
+		}
 	}
 	close(fd);
 	_clients.erase(fd);
+}
+
+void Server::partClient(Client &sender, Channel &curChannel)
+{
+	std::string reason = "Gotta gooo bye bye";
+	
+	std::stringstream ss;
+	ss << ":" << sender.getNickname() << "!" << sender.getUsername() << "@" << "localhost" << " PART #" << curChannel.getName() << " :" << reason;
+	curChannel.systemMessage(ss.str());
+	curChannel.removeUser(sender);
+	if (curChannel.getOperator(sender.getNickname()))
+		curChannel.removeOperator(sender);
+	if (curChannel.isUserInvited(sender.getNickname()))
+		curChannel.removeInvited(sender);
 }

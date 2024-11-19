@@ -48,9 +48,9 @@ bool Server::channelKey(bool sign, Channel &channel, std::string &modeReport, st
 {
 	if (sign)
 	{
-		std::string key = *argsIt;
-		if (key.empty())
+		if (argsIt->empty())
 			{sendResponse(ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "(k)"), fd); return false;}
+		std::string key = *argsIt;
 		if (key.find_first_of(" \t\v") != std::string::npos)
 			{sendResponse(ERR_INVALIDMODEPARAM(getClient(fd)->getNickname(), channel.getName(), "k", key, "Should be without Whitespaces"), fd); return false;}
 		channel.setMode(KEY, key, true);
@@ -95,9 +95,9 @@ bool Server::userLimit(bool sign, Channel &channel, std::string &modeReport, std
 {
 	if (sign)
 	{
-		std::string limit = *argsIt;
-		if (limit.empty())
+		if (argsIt->empty())
 			{sendResponse(ERR_NEEDMOREPARAMS(getClient(fd)->getNickname(), "(l)"), fd); return false;}
+		std::string limit = *argsIt;
 		if (limit.find_first_not_of("0123456789") != std::string::npos || std::atoi(limit.c_str()) <= 0)
 			{sendResponse(ERR_INVALIDMODEPARAM(getClient(fd)->getNickname(), channel.getName(), "i", limit, "Should be a Int Number"), fd); return false;}
 		channel.setMode(USER_LIMIT, limit, true);
@@ -118,7 +118,8 @@ void Server::MODE(std::vector<std::string> cmd, int fd)
 	std::string target;
 	std::string modestring;
 	std::string params;
-	bool	sign;
+	bool	sign = false;
+	int		is_sign = 0;
 	std::vector<std::string> modeArgs;
 	Client &sender = *getClient(fd);
 	std::string modeReport;
@@ -138,21 +139,26 @@ void Server::MODE(std::vector<std::string> cmd, int fd)
 		{sendResponse(RPL_CHANNELMODEIS(sender.getNickname(), target.substr(1), channel.getModestring(), channel.getModesvalues()), fd); return ;}
 	if (!channel.getOperator(sender.getNickname())) // check if sender has perms
 		{sendResponse(ERR_CHANOPRIVSNEEDED(sender.getNickname(), target.substr(1)), fd); return ;}
+	if (modestring.find_first_not_of("+-lkito") != std::string::npos)
+		{sendResponse(ERR_UMODEUNKOWNFLAG(sender.getNickname()), fd); return ;}
 	for (auto pos = modestring.begin(); pos != modestring.end(); pos++)
 	{
 		bool test = true;
 		if (*pos == '+' || *pos == '-')
+		{
 			sign = (*pos == '+'); //if *pos == + then sign will be 1
-		else if (*pos == 'i')
+			is_sign = 1;
+		}
+		else if (*pos == 'i' && is_sign)
 			inviteOnly(sign, channel, modeReport);
-		else if (*pos == 't')
+		else if (*pos == 't' && is_sign)
 			topicRestrict(sign, channel, modeReport);
-		else if (*pos == 'k')
+		else if (*pos == 'k' && is_sign && !(cmdIt == cmd.end() && sign == 1))
 			test = channelKey(sign, channel, modeReport, cmdIt, argsReport, fd);
-		else if (*pos =='o')
+		else if (*pos =='o' && is_sign && !(cmdIt == cmd.end() && sign == 1))
 			test = operatorPriv(sign, channel, modeReport, cmdIt, argsReport, fd);
-		else if (*pos == 'l')
-			test = userLimit(sign, channel, modeReport, cmdIt, argsReport, fd);
+		else if (*pos == 'l' && is_sign && !(cmdIt == cmd.end() && sign == 1))
+				test = userLimit(sign, channel, modeReport, cmdIt, argsReport, fd);
 		else
 			sendResponse(ERR_UMODEUNKOWNFLAG(sender.getNickname()), fd);
 		if (!test)

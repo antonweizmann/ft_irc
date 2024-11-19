@@ -64,7 +64,6 @@ void	Server::receiveData(int fd)
 	{
 		std::cout << RED << "Client " << fd << " has disconnected" << std::endl;
 		clearClient(fd);
-		close(fd);
 	} else {
 		std::cout << MAGENTA << "Client " << fd << " data: " << RESET << buff << std::endl;
 		splitData(buff, cmd, *getClient(fd));

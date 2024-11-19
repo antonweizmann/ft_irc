@@ -64,7 +64,7 @@ class Server
 		bool		channelKey(bool sign, Channel &channel, std::string &modeReport, std::vector<std::string>::iterator &argsIt, std::string &argsReport, int fd);
 		bool		operatorPriv(bool sign, Channel &channel, std::string &modeReport, std::vector<std::string>::iterator &args_it, std::string &argsReport, int fd);
 		void		systemMessage(const std::string &message);
-
+		void		partClient(Client &sender, Channel &curChannel);
 		// Commands
 		void	KICK(std::vector<std::string> cmd, int fd);
 		void	MODE(std::vector<std::string> cmd, int fd);
